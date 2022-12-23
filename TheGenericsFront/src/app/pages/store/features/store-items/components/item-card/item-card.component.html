@@ -1,0 +1,8 @@
+<div *ngIf="this.product" class="shop-item">
+    <span class="shop-item-title">{{this.product.name}}</span>
+    <img class="shop-item-image" [src]="this.product.imageLink">
+    <div class="shop-item-details">
+        <span class="shop-item-price">${{this.product.price}}</span>
+        <button class="btn btn-primary shop-item-button" type="button" (click)="addItemToCart()">ADD TO CART</button>
+    </div>
+</div>

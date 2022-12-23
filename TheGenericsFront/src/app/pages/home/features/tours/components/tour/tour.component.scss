@@ -1,0 +1,57 @@
+.tour {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+}
+
+.tour-item {
+    display: inline-block;
+    padding-right: .5em;
+}
+
+.tour-date {
+    color: #555;
+    width: 11%;
+    font-weight: bold;
+}
+
+.tour-city {
+    width: 24%;
+}
+
+.tour-arena {
+    width: 42%;
+}
+
+.tour-btn {
+    min-width: 19%;
+}
+.tour-item {
+    display: inline-block;
+    padding-right: 0.5em;
+}
+
+.btn {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.67em 0.67em;
+    cursor: pointer;
+    border: none;
+    border-radius: 0.3em;
+    font-weight: bold;
+}
+
+.btn-primary {
+    color: white;
+    background-color: #56CCF2;
+}
+
+.btn-gray-disabled {
+    color: white;
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.bg-gray {
+    background-color: #f1f1f1;
+}

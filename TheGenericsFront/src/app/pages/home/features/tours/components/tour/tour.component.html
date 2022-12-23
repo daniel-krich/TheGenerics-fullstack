@@ -1,0 +1,11 @@
+<div class="tour" *ngIf="tourModel" [class.bg-gray]="this.tourModel.tourTicketBought">
+    <span [matTooltip]="this.tourModel.tourDate | dateCountDownFormatter" class="tour-item tour-date">{{this.tourModel.tourDate | dayMonthFormatter}}</span>
+    <span class="tour-item tour-city">{{this.tourModel.tourLocation}}</span>
+    <span class="tour-item tour-arena">{{this.tourModel.tourArena}}</span>
+    <button type="button"
+            class="tour-item tour-btn btn btn-primary"
+            (click)="buyTicket()"
+            [class.btn-gray-disabled]="this.tourModel.tourTicketBought"
+            [disabled]="this.tourModel.tourTicketBought"
+            [innerText]="this.tourModel.tourTicketBought ? 'BOUGHT' : 'BUY TICKETS'"></button>
+</div>

@@ -1,0 +1,13 @@
+<ul *ngIf="this.toursService.toursList as toursList; else loadingTemplate">
+    <li *ngFor="let tour of toursList"
+        class="tour-row">
+
+        <app-tour [tourModel]="tour"></app-tour>
+        
+    </li>
+    
+</ul>
+
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

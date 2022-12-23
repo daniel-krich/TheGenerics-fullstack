@@ -1,0 +1,23 @@
+<header class="main-header">
+    <nav class="main-nav custom-nav">
+        <ul>
+            <li>
+                <a [routerLink]="['/home']"
+                   routerLinkActive="nav-active"
+                   [routerLinkActiveOptions]="{exact: true}">HOME</a>
+            </li>
+            <li>
+                <a [routerLink]="['/store']"
+                   routerLinkActive="nav-active"
+                   [routerLinkActiveOptions]="{exact: true}">STORE</a>
+            </li>
+            <li>
+                <a [routerLink]="['/about']"
+                   routerLinkActive="nav-active"
+                   [routerLinkActiveOptions]="{exact: true}">ABOUT</a>
+            </li>
+        </ul>
+    </nav>
+    <h1 class="band-name band-name-large">The Generics</h1>
+    <ng-content></ng-content>
+</header>

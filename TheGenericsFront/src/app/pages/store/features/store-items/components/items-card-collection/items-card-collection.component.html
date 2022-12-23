@@ -1,0 +1,6 @@
+<section *ngIf="this.productsCategory !== undefined" class="container-wrapper">
+    <h2 class="section-header" [innerText]="this.productsCategoryName"></h2>
+    <div class="shop-items">
+        <app-item-card *ngFor="let product of products | extractItemsFromProductCategory: this.productsCategory" [itemId]="product.id"></app-item-card>
+    </div>
+</section>

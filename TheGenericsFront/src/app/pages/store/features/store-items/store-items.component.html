@@ -1,0 +1,11 @@
+<ng-container *ngIf="storeProducts$ | async as storeProducts; else loadingTemplate">
+    <app-items-card-collection
+            *ngFor="let category of storeProducts | extractCategoriesFromProductList"
+            [products]="storeProducts | extractItemsFromProductCategory: category"
+            [productsCategory]="category">
+    </app-items-card-collection>
+</ng-container>
+
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

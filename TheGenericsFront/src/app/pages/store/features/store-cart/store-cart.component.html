@@ -1,0 +1,32 @@
+<section class="wrapper">
+    <div class="content-section">
+        <h2 class="section-header">CART</h2>
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">ITEM</span>
+            <span class="cart-price cart-header cart-column">PRICE</span>
+            <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        </div>
+
+        <ng-container *ngIf="cart$ | async as cartItems">
+            <div *ngIf="cartItems.length > 0; else emptyCartTemplate" class="cart-items m-3">
+                <app-item-cart *ngFor="let cartProduct of cartItems" [cartProduct]="cartProduct"></app-item-cart>
+            </div>
+
+
+            <div class="cart-total">
+                <strong class="cart-total-title">Total</strong>
+                <span class="cart-total-price">${{this.cartService.cartPriceTotal}}</span>
+            </div>
+            <button class="btn btn-primary btn-purchase" type="button" (click)="onPurchase(cartItems)">PURCHASE</button>
+
+            <ng-template #emptyCartTemplate>
+                <div class="cart-items m-3">
+                    <h2 class="text-center">Empty cart</h2>
+                </div>
+            </ng-template>
+        </ng-container>
+
+        
+    </div>
+    
+</section>
