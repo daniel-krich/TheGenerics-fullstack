@@ -41,7 +41,7 @@ namespace TheGenerics.Controllers
             return _cartSessionService.UpdateProduct(cartProd.ProductId, cartProd.ProductQuantity);
         }
 
-        [HttpDelete("remove/{productId}")]
+        [HttpDelete("{productId}/remove")]
         public bool RemoveItemFromCart(int productId)
         {
             return _cartSessionService.RemoveProduct(productId);

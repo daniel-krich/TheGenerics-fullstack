@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BASE_URL } from 'src/app/core/consts';
 import { CartProductInterface } from '../shared/interfaces/cart-product.interface';
@@ -12,6 +12,7 @@ import { StoreDataService } from './store-data.service';
 @Injectable()
 export class CartDataService {
 
+    private _modifyRequestSub: Subscription | undefined;
     private _cartItems$: BehaviorSubject<CartProductModel[]> = new BehaviorSubject<CartProductModel[]>([]);
     
     constructor(private storeService: StoreDataService, private httpClient: HttpClient) {
@@ -29,10 +30,7 @@ export class CartDataService {
                         if(x) {
                             this._cartItems$.next([...this._cartItems$.value, new CartProductModel(itemId, 1)]);
                         }
-                    },
-                    (e: Error) => {
-                        throw new Error(`Request error (${e.message})`);
-                    });
+                    }, this.handleRequestError);
                 
             }
             else {
@@ -42,29 +40,27 @@ export class CartDataService {
     }
 
     public removeItem(itemId: number) : void {
-        this.httpClient.delete<Boolean>(BASE_URL + '/api/shoppingcart/remove/' + itemId)
+        this.httpClient.delete<Boolean>(BASE_URL + `/api/shoppingcart/${itemId}/remove`)
             .subscribe(x => {
                 if(x) {
                     this._cartItems$.next(this._cartItems$.value.filter(x => x.productId != itemId));
                 }
-            },
-            (e: Error) => {
-                throw new Error(`Request error (${e.message})`);
-            });
+            }, this.handleRequestError);
     }
 
     public modifyItem(itemId: number, quantity: number) : void {
         const cartProduct: CartProductModel | undefined = this._cartItems$.value.find(x => x.productId == itemId);
         if(cartProduct) {
-            this.httpClient.put<Boolean>(BASE_URL + '/api/shoppingcart', new CartProductModel(itemId, quantity))
+
+            this._modifyRequestSub?.unsubscribe();
+                
+            
+            this._modifyRequestSub = this.httpClient.put<Boolean>(BASE_URL + '/api/shoppingcart', new CartProductModel(itemId, quantity))
                 .subscribe(x => {
                     if(x) {
                         cartProduct.productQuantity = quantity;
                     }
-                },
-                (e: Error) => {
-                    throw new Error(`Request error (${e.message})`);
-                });
+                }, this.handleRequestError);
             
         }
         else {
@@ -76,10 +72,7 @@ export class CartDataService {
         this.httpClient.get(BASE_URL + '/api/shoppingcart/clearcart')
             .subscribe(_ => {
                 this._cartItems$.next([]);
-            },
-            (e: Error) => {
-                throw new Error(`Request error (${e.message})`);
-            });
+            }, this.handleRequestError);
     }
 
     public getCartItems() : Observable<CartProductModel[]> {
@@ -95,5 +88,9 @@ export class CartDataService {
                 return acc + (product.price * curr.productQuantity);
             return acc;
         }, 0).toFixed(2);
+    }
+
+    private handleRequestError(e: Error): void {
+        alert(`Request error (${e.message})`);
     }
 }
