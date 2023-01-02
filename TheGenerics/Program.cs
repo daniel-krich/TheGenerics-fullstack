@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<CartSessionService>();
+builder.Services.AddScoped<TicketsSessionService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -23,6 +24,9 @@ builder.Services.AddSession(x =>
         Expiration = TimeSpan.FromHours(12)
     };
 });
+
+builder.Services.AddAuthentication("thegenerics").AddCookie("thegenerics");
+builder.Services.AddAuthorization();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -52,6 +56,7 @@ app.UseRouting();
 
 app.UseCors("AllowAllPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 

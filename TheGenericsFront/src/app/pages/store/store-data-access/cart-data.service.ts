@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BASE_URL } from 'src/app/core/consts';
 import { CartProductInterface } from '../shared/interfaces/cart-product.interface';
 import { ProductInterface } from '../shared/interfaces/product.interface';
 import { CartProductModel } from '../shared/models/cart-product.model';
@@ -15,8 +14,8 @@ export class CartDataService {
     private _modifyRequestSub: Subscription | undefined;
     private _cartItems$: BehaviorSubject<CartProductModel[]> = new BehaviorSubject<CartProductModel[]>([]);
     
-    constructor(private storeService: StoreDataService, private httpClient: HttpClient) {
-        httpClient.get<CartProductInterface[]>(BASE_URL + '/api/shoppingcart').pipe(map(x => x.map(y => new CartProductModel(y.productId, y.productQuantity))))
+    constructor(private storeService: StoreDataService, private httpClient: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+        httpClient.get<CartProductInterface[]>(this.baseUrl + '/api/shoppingcart').pipe(map(x => x.map(y => new CartProductModel(y.productId, y.productQuantity))))
                     .subscribe(x => this._cartItems$.next(x));
     }
 
@@ -25,7 +24,7 @@ export class CartDataService {
         if(product) {
             const cartProduct: CartProductModel | undefined = this._cartItems$.value.find(x => x.productId == itemId);
             if(!cartProduct) {
-                this.httpClient.post<Boolean>(BASE_URL + '/api/shoppingcart', new CartProductModel(itemId, 1))
+                this.httpClient.post<Boolean>(this.baseUrl + '/api/shoppingcart', new CartProductModel(itemId, 1))
                     .subscribe(x => {
                         if(x) {
                             this._cartItems$.next([...this._cartItems$.value, new CartProductModel(itemId, 1)]);
@@ -40,7 +39,7 @@ export class CartDataService {
     }
 
     public removeItem(itemId: number) : void {
-        this.httpClient.delete<Boolean>(BASE_URL + `/api/shoppingcart/${itemId}/remove`)
+        this.httpClient.delete<Boolean>(this.baseUrl + `/api/shoppingcart/${itemId}/remove`)
             .subscribe(x => {
                 if(x) {
                     this._cartItems$.next(this._cartItems$.value.filter(x => x.productId != itemId));
@@ -55,7 +54,7 @@ export class CartDataService {
             this._modifyRequestSub?.unsubscribe();
                 
             
-            this._modifyRequestSub = this.httpClient.put<Boolean>(BASE_URL + '/api/shoppingcart', new CartProductModel(itemId, quantity))
+            this._modifyRequestSub = this.httpClient.put<Boolean>(this.baseUrl + '/api/shoppingcart', new CartProductModel(itemId, quantity))
                 .subscribe(x => {
                     if(x) {
                         cartProduct.productQuantity = quantity;
@@ -69,7 +68,7 @@ export class CartDataService {
     }
 
     public clearCart() : void {
-        this.httpClient.get(BASE_URL + '/api/shoppingcart/clearcart')
+        this.httpClient.get(this.baseUrl + '/api/shoppingcart/clearcart')
             .subscribe(_ => {
                 this._cartItems$.next([]);
             }, this.handleRequestError);

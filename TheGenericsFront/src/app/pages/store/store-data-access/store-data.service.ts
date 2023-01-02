@@ -1,19 +1,18 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ProductCategoryEnum, ProductInterface } from "../shared/interfaces/product.interface";
 import { ProductModel } from '../shared/models/product.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { BASE_URL } from 'src/app/core/consts';
 
 @Injectable()
 export class StoreDataService {
 
     private _storeProducts$: BehaviorSubject<ProductInterface[]> = new BehaviorSubject<ProductInterface[]>([]);
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
 
-         httpClient.get<ProductInterface[]>(BASE_URL + '/api/products')
+         httpClient.get<ProductInterface[]>(this.baseUrl + '/api/products')
                     .pipe(map(x => x.map(y => new ProductModel(y.id, y.name, y.imageLink, y.price, y.category))))
                     .subscribe(x => this._storeProducts$.next(x));
     }
